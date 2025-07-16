@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Product - TShirtStore</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #121212; color: #fff; margin: 0; padding: 0; }
+        .header { background-color: #1e1e1e; padding: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #bb86fc; }
+        .user-menu { position: relative; }
+        .user-icon { background-color: #3700b3; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; }
+        .dropdown-menu { position: absolute; right: 0; background-color: #1e1e1e; border: 1px solid #333; border-radius: 4px; padding: 0.5rem 0; width: 200px; display: none; z-index: 100; }
+        .dropdown-menu a { display: block; padding: 0.5rem 1rem; color: #fff; text-decoration: none; }
+        .dropdown-menu a:hover { background-color: #333; }
+        .user-menu:hover .dropdown-menu { display: block; }
+        .form-container { max-width: 600px; margin: 2rem auto; padding: 2rem; background-color: #1e1e1e; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .form-container h1 { margin-top: 0; font-weight: bold; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: bold; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 0.5rem; border: 1px solid #333; border-radius: 4px; background-color: #2d2d2d; color: #fff; }
+        .form-group textarea { min-height: 100px; }
+        .btn { padding: 0.75rem 1.5rem; background-color: #6200ea; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .btn:hover { background-color: #3700b3; }
+        .error { color: #cf6679; font-size: 0.875rem; margin-top: 0.25rem; }
+        .back-link { display: inline-block; margin-top: 1rem; color: #bb86fc; text-decoration: none; }
+        .back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">TShirtStore - Admin</div>
+        <div class="user-menu">
+            <div class="user-icon">A</div>
+            <div class="dropdown-menu">
+                <a th:href="@{/admin}">Dashboard</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="form-container">
+        <h1>Add New Product</h1>
+        <form th:action="@{/products/add}" th:object="${productDto}" method="post">
+            <div class="form-group">
+                <label for="name">Product Name</label>
+                <input type="text" id="name" th:field="*{name}" required>
+                <div th:if="${#fields.hasErrors('name')}" class="error" th:errors="*{name}"></div>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <input type="text" id="category" th:field="*{category}" required>
+                <div th:if="${#fields.hasErrors('category')}" class="error" th:errors="*{category}"></div>
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input type="number" id="price" th:field="*{price}" step="0.01" min="0" required>
+                <div th:if="${#fields.hasErrors('price')}" class="error" th:errors="*{price}"></div>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}" required></textarea>
+                <div th:if="${#fields.hasErrors('description')}" class="error" th:errors="*{description}"></div>
+            </div>
+            <div class="form-group">
+                <label for="imageUrl">Image URL</label>
+                <input type="url" id="imageUrl" th:field="*{imageUrl}" required>
+                <div th:if="${#fields.hasErrors('imageUrl')}" class="error" th:errors="*{imageUrl}"></div>
+            </div>
+            <button type="submit" class="btn">Add Product</button>
+            <a th:href="@{/admin}" class="back-link">Back to Dashboard</a>
+        </form>
+    </main>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Orders - TShirtStore</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #121212; color: #fff; margin: 0; padding: 0; }
+        .header { background-color: #1e1e1e; padding: 1rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #bb86fc; }
+        .user-menu { position: relative; }
+        .user-icon { background-color: #3700b3; color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-weight: bold; }
+        .dropdown-menu { position: absolute; right: 0; background-color: #1e1e1e; border: 1px solid #333; border-radius: 4px; padding: 0.5rem 0; width: 200px; display: none; z-index: 100; }
+        .dropdown-menu a { display: block; padding: 0.5rem 1rem; color: #fff; text-decoration: none; }
+        .dropdown-menu a:hover { background-color: #333; }
+        .user-menu:hover .dropdown-menu { display: block; }
+        .orders-container { padding: 2rem; }
+        .order-card { background-color: #1e1e1e; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .order-header { display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
+        .order-id { font-weight: bold; }
+        .order-date { color: #bb86fc; }
+        .order-status { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.875rem; }
+        .status-processing { background-color: #ffab00; color: #121212; }
+        .status-shipped { background-color: #00c853; color: #121212; }
+        .status-delivered { background-color: #6200ea; color: white; }
+        .order-items { margin-top: 1rem; }
+        .order-item { display: flex; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #333; }
+        .order-item:last-child { border-bottom: none; }
+        .order-item-image { width: 80px; height: 80px; object-fit: cover; margin-right: 1rem; border-radius: 4px; }
+        .order-item-details { flex-grow: 1; }
+        .order-item-title { font-weight: bold; }
+        .order-item-price { color: #bb86fc; }
+        .order-summary { display: flex; justify-content: space-between; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #333; }
+        .order-total { font-weight: bold; }
+        .order-shipping { margin-top: 1rem; }
+        .empty-orders { text-align: center; padding: 2rem; font-size: 1.2rem; }
+        .back-to-shop { display: inline-block; margin-top: 1rem; color: #bb86fc; text-decoration: none; }
+        .back-to-shop:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">TShirtStore</div>
+        <div class="user-menu">
+            <div class="user-icon" th:text="${user.username.substring(0, 1).toUpperCase()}"></div>
+            <div class="dropdown-menu">
+                <a th:href="@{/user}">Back to Shop</a>
+                <a th:href="@{/profile}">View/Edit Profile</a>
+                <a th:href="@{/logout}">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="orders-container">
+        <h1>Your Orders</h1>
+        
+        <div th:if="${not orders.empty}">
+            <div class="order-card" th:each="order : ${orders}">
+                <div class="order-header">
+                    <div>
+                        <span class="order-id" th:text="'Order #' + ${order.id}"></span>
+                        <span class="order-date" th:text="${#temporals.format(order.orderDate, 'MMM dd, yyyy hh:mm a')}"></span>
+                    </div>
+                    <span class="order-status" th:classappend="'status-' + ${order.status.toLowerCase()}" th:text="${order.status}"></span>
+                </div>
+                
+                <div class="order-items">
+                    <div class="order-item" th:each="item : ${order.items}">
+                        <img th:src="@{${item.product.imageUrl}}" alt="T-Shirt" class="order-item-image">
+                        <div class="order-item-details">
+                            <div class="order-item-title" th:text="${item.product.name}"></div>
+                            <div class="order-item-price" th:text="'$' + ${#numbers.formatDecimal(item.price, 1, 2)} + ' x ' + ${item.quantity}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-summary">
+                    <div class="order-shipping">
+                        <div>Shipped to: <span th:text="${order.shippingAddress}"></span></div>
+                    </div>
+                    <div class="order-total" th:text="'Total: $' + ${#numbers.formatDecimal(order.totalAmount, 1, 2)}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="empty-orders" th:if="${orders.empty}">
+            <p>You haven't placed any orders yet</p>
+            <a th:href="@{/user}" class="back-to-shop">Start Shopping</a>
+        </div>
+    </main>
+</body>
+</html>
